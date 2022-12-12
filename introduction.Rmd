@@ -1,16 +1,16 @@
+
 # Introduction
 
 A total of two datasets will be used in this project, namely *Seasons_Stats.csv* and *All.NBA.1984-2018.csv*. These two datasets were all originally parsed from a website called [Basketball Reference](https://www.basketball-reference.com). Nevertheless, I chose to use the more ready-to-go datasets provided by the users on Kaggle. 
 
   * The *Seasons_Stats.csv* file can be accessed through this [link](https://www.kaggle.com/datasets/drgilermo/nba-players-stats?select=Seasons_Stats.csv). This dataset contains players' game statistics from year 1950 to 2017. To be more specific, there are a total of 53 columns, and each column(except the first column, which is just a column of index starting from 0 to 24690) represents an attribute of that player. These attributes include basic statistics such as games played (G) and total points scored in that season (PTS) as well as the more advanced metrics such as Win Shares (WS), which is an estimate of the number of wins contributed by that player.
 
-\newline
 
   * The *All.NBA.1984-2018.csv* file can be accessed through this [link](https://www.kaggle.com/code/kerneler/starter-all-nba-players-1984-2018-e8f3592a-1/data?select=All.NBA.1984-2018.csv). This dataset contains all the players that are selected to be in All-NBA teams starting from the 1984-1985 season to the 2016-2017 season. One thing to note is that before the 1988-1989 season, only 2 teams of All-NBA teams were selected each year; and starting from the 1988-1989 season, a total of 3 teams of All-NBA teams were selected each year. This dataset has a total of 32 columns, and each column represents an attribute of that player. These attributes include basic statistics such as the season which that player was selected in the All-NBA teams (Season) as well as the more advanced metrics such as effective field goal percentage (eFG%).
 
-In addition, I will not be using all the data from these two datasets in that some important advanced data for the 1950s-1970s are missing (because some of the advanced metrics were only introduced in the 80s). Moreover, the league and the players in this league have evolved throughout the years and the data from earlier seasons can hardly be doing a good job of predicting whether or not a current player gets chosen to be on the All-NBA team. Consequently, I will only be looking at the data from 2000 (the year I was born) to 2017 (the latest year that these two datasets have) for this project.
+In addition, I will not be using all the data from these two datasets in that some important advanced data for the 1950s-1970s are missing (because some of the advanced metrics were only introduced in the 80s). Moreover, the league and the players in this league have evolved throughout the years, so the data from earlier seasons can hardly be doing a good job of predicting whether or not a current player gets chosen to be on the All-NBA team. Consequently, I will only be looking at the data from 2000 (the year I was born) to 2017 (the latest year that these two datasets have) for this project. 
 
-The question that I am trying to answer is: what characteristics of an NBA player are more indicative of selection to the All-NBA teams, and to what extent can I predict the selection of All-NBA team using the players' statistics? 
+Every year, there are more than 450 NBA players that play in a single season, but only 15 of them would get selected into the All-NBA teams for that season. This makes me wonder what makes these 15 players stand out from all the NBA players. Consequently, the question that I am trying to answer is: **what characteristics of an NBA player are more indicative of selection to the All-NBA teams, and to what extent can I predict the selection of All-NBA team using the players' statistics?** 
 
 
 ```{r,include=FALSE}
@@ -31,17 +31,21 @@ library(readr)
 # Read in both datasets for my project
 players <- read_csv("Seasons_Stats.csv")
 all_nba <- read_csv("All.NBA.1984-2018.csv", skip = 1)
+
 ```
 
 ```{r,include=FALSE}
-# Recode season to year (eg: recode 1987-1988 season to be year 1988, which is consistent with players dataset)
+# Recode season to year 
+# (eg: recode 1987-1988 season to be year 1988, which is consistent with players dataset)
 all_nba$Year <- as.numeric(str_extract(all_nba$Season,"^\\d*"))+1
+
 ```
 
 ```{r,include=FALSE}
 # Filter out season before 2000
 players <- players |> filter(Year >= 2000)
 all_nba <- all_nba |> filter(Year >= 2000)
+
 ```
 
 ```{r,include=FALSE}
@@ -49,38 +53,44 @@ all_nba <- all_nba |> filter(Year >= 2000)
 colSums(is.na(players))["PER"]
 index_no_PER <- which(is.na(players$PER))
 index_no_PER
+
 ```
 
 ```{r,include=FALSE}
 # Players with index number 3312 3629 4592 5562 7450 do not have PER values
 # Remove them
 players <- players[-c(3312, 3629, 4592, 5562, 7450),]
+
 ```
 
 ```{r,include=FALSE}
 # Fixing weird team names in the all_nba tibble
-# TOT stands for "total" instead of a specific team name because these players, despite selected in the all-NBA teams, were traded during in the middle of that season. 
+# TOT stands for "total" instead of a specific team name because these players, 
+# despite selected in the all-NBA teams, were traded during in the middle of that season. 
 TOT_all_nba_Player <- all_nba |> filter(Tm == "TOT") |> pull("Player")
 TOT_all_nba_Year <- all_nba |> filter(Tm == "TOT") |> pull("Year")
+
 ```
 
 
 ```{r,include=FALSE}
-# Assign an actual team to that player according to the teams that they played the majority of their games for within that season
+# Assign an actual team to that player according to the teams 
+# that they played the majority of their games for within that season
 
 # For Chauncey Billups:
-CB_team <- players |> filter(Player == TOT_all_nba_Player[1] & Year == TOT_all_nba_Year[1]) |> arrange(-G) 
+CB_team <- players|>filter(Player==TOT_all_nba_Player[1]&Year==TOT_all_nba_Year[1])|>arrange(-G) 
 CB_team_name <- CB_team[2,6]
 
 # Substitute Chauncey Billups' team for 2009 season from TOT to DEN
 all_nba[which(all_nba$Tm == "TOT")[1],5] <- CB_team_name
 
 # For Dikembe Mutombo:
-DM_team <- players |> filter(Player == "Dikembe Mutombo*" & Year == TOT_all_nba_Year[2]) |> arrange(-G)
+DM_team <- players|>filter(Player=="Dikembe Mutombo*"&Year==TOT_all_nba_Year[2])|>arrange(-G)
 DM_team_name <- DM_team[2,6]
 
 # Substitute Dikembe Mutombos' team for 2009 season from TOT to ATL
 all_nba[which(all_nba$Tm == "TOT")[1],5] <- DM_team_name
+
 ```
 
 
@@ -88,11 +98,13 @@ all_nba[which(all_nba$Tm == "TOT")[1],5] <- DM_team_name
 # Remove the column that's entirely blank
 players$blank2 <- NULL
 players$blanl <- NULL
+
 ```
 
 
 ```{r,include=FALSE}
-# Recode column names so that they don't start with a number/end with a "%" sign, which would make it hard to call the column name.
+# Recode column names so that they don't start with a number/end with a "%" sign,
+# which would make it hard to call the column name.
 players <- players |> rename("X3P" = "3P",
                   "X3PA" = "3PA",
                   "X3P." = "3P%",
@@ -115,11 +127,13 @@ players <- players |> rename("X3P" = "3P",
                   "eFG." = "eFG%",
                   "FT." = "FT%"
                   )
+
 ```
 
 
 ```{r,include=FALSE}
-# Change Player stats to per game instead of for the whole season to make it fair; also change the variables' names to be more interpretable
+# Change Player stats to per game instead of for the whole season to make it fair;
+# Also change the variables' names to be more interpretable
 players_pergame <- players |> mutate(Name = Player,
                                      Position = Pos,
                                      age = Age,
@@ -145,15 +159,20 @@ players_pergame <- players |> mutate(Name = Player,
 
 # Extract the 22 columns that we just created
 players_pergame <- players_pergame[,c(52:73)]
+
 ```
 
 
 ```{r,include=FALSE}
 # Exclude bench players that would've never made to the All-NBA teams anyway
 # The number 12 is chosen for Minutes because each quarter is 12 minutes.
-# The number 10 is chosen for Games because usually really good teams would rest their starting players for the last 10 or so regular season games and play more bench warmers that never got a chance to play during the first 72 games in order to protect their starting players from getting an injury before play-off starts.
+# The number 10 is chosen for Games because usually really good teams would rest
+# their starting players for the last 10 or so regular season games and play more
+# bench warmers that never got a chance to play during the first 72 games 
+# in order to protect their starting players from getting an injury before play-off starts.
 
 players_pergame <- players_pergame |> filter(Minutes >= 12 & Games >= 10)
+
 ```
 
 
@@ -164,11 +183,13 @@ for(i in 1:nrow(players_pergame)){
     players_pergame$Name[i] <- str_sub(players_pergame$Name[i],1,-2)
   }
 }
+
 ```
+
 
 ```{r,include=FALSE}
 # Fixing the issue of inconsistency for Metta World Peace's name
-players_pergame <- players_pergame |> mutate(Name = case_when(Name == "Metta World" ~ "Metta World Peace",
+players_pergame<-players_pergame|>mutate(Name=case_when(Name=="Metta World"~"Metta World Peace",
                                                               TRUE ~ Name))
 
 # Create matching labels in two datasets
@@ -176,28 +197,30 @@ players_pergame <- players_pergame |> mutate(Name_year = paste(Name,year))
 all_nba <- all_nba |> mutate (Player_Year = paste(Player, Year))
 
 # Create labels for these players: All_NBA = 1/0
-players_pergame <- players_pergame |> mutate(All_NBA = case_when(Name_year %in% all_nba$Player_Year ~ 1,
+players_pergame <-players_pergame|>mutate(All_NBA=case_when(Name_year %in% all_nba$Player_Year ~ 1,
                                                 ! Name_year %in% all_nba$Player_Year ~ 0))
+
 ```
 
 
-\newline
 
 After completing the data wrangling part, we can now see a total of 7220 rows of players' stats from 2000-2017.
 
 ```{r}
 dim(players_pergame)
+
 ```
 
-\newline
+
 
 In addition, there are 273 rows of All-NBA players (All_NBA = 1) where in fact we should only have 270 players (18 seasons * 15 players/season = 270 players). This is because Dikembe Mutombo was counted 2 extra times (he switched teams twice during the 2000-2001 season), and Chauncey Billups was counted a total of 1 extra time (he switched teams once during the 2008-2009 season). Nevertheless, I decide to keep these 3 extra entries because, though on different teams, their stats could still represent their overall performances within that season.
 
 ```{r,echo=FALSE}
 players_pergame |> filter(All_NBA == 1) |>  group_by(year) |> summarise(length(Name))
+
 ```
 
-\newline
+
 
 Let's compare the distributions of some basic features (namely points, rebounds, and assists) between All_NBA players and players that were not selected in any All-NBA teams. The plots in the first row are using all the players' data, and the plots in the second row are using only the players that were selected in the All-NBA Teams. The vertical lines of each plot represent the average value of that corresponding feature and population.
 
@@ -230,10 +253,12 @@ assists_plot_AllNBA <- ggplot(players_pergame_AllNBA, aes(Assists)) +
   geom_density(fill = "red") +
   geom_vline(aes(xintercept = mean(Assists)))
 
-grid.arrange(points_plot, rebounds_plot, assists_plot, points_plot_AllNBA, rebounds_plot_AllNBA, assists_plot_AllNBA, ncol = 3)
+grid.arrange(points_plot, rebounds_plot, assists_plot, points_plot_AllNBA,
+             rebounds_plot_AllNBA, assists_plot_AllNBA, ncol = 3)
+
 ```
 
-\newline
+
 
 **Descriptions and justifications of the methodology:**
 

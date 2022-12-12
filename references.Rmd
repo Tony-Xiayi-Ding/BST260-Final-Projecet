@@ -1,1 +1,4 @@
-references
+# References
+1. Basketball-Reference. *Glossary*. Basketball-Reference. Retrieved November 28, 2022, from https://www.basketball-reference.com/about/glossary.html 
+2. Goldstein, O. (2018, April 27). *NBA players stats since 1950*. Kaggle. Retrieved November 28, 2022, from https://www.kaggle.com/datasets/drgilermo/nba-players-stats?select=Seasons_Stats.csv 
+3. Kerneler, K. (2018, September 2). *Starter: All NBA players 1984-2018 e8f3592a-1*. Kaggle. Retrieved November 28, 2022, from https://www.kaggle.com/code/kerneler/starter-all-nba-players-1984-2018-e8f3592a-1/data?select=All.NBA.1984-2018.csv 

@@ -1,8 +1,6 @@
 ---
-title: "Home"
+title: "Tony Ding's BST-260 Final Project"
 output: html_document
 ---
 
-**BST 260 Final Project**
-
-Predicting All-NBA team selections.
+Predicting All-NBA teams selection based on players' statistics for all players from 2000-2017.
