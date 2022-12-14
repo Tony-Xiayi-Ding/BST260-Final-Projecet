@@ -257,9 +257,6 @@ $(document).ready(function () {
 <li>
   <a href="references.html">References</a>
 </li>
-<li>
-  <a href="appendix.html">Appendix</a>
-</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         
@@ -308,24 +305,24 @@ Additionally, a player who’s able to earn a lot of game time is usually
 the same player who can help his team score, which explains why the
 variable <em>Game</em> and the variable <em>Points</em> are present.
 Consequently, we can conclude that: a player who is great at scoring
-points while also mainlining a high efficiency rating and a high Box
+points while also maintaining a high efficiency rating and a high Box
 Plus/Minus will have a significantly higher chance of being selected
 into the All-NBA teams.</p>
-<p>I would consider that my analysis is successful given the high
-accuracy and AUC scores that I obtained from both models when tested on
-the test set. One thing worth noticing is the relatively low specificity
-of the two models. Nevertheless, this is caused by the inevitable nature
-of the fact that every year less than 4% of the players get selected
-into the All-NBA teams, which gives the dataset less than 4 percent of
-positive labels for the outcome variable.</p>
+<p>Furthermore, I would consider that my analysis is successful given
+the high accuracy and AUC scores that I obtained from both models when
+tested on the test set. One thing worth noticing is the relatively low
+specificity of the two models. Nevertheless, this is caused by the
+inevitable nature of the fact that every year less than 4% of the
+players get selected into the All-NBA teams, which gives the dataset
+less than 4 percent of positive labels for the outcome variable.</p>
 <p>If I had more time to dig deeper into this research question, I would
-try to scrape the web for data in 2018-2022 NBA season and test my
+try to scrape the web for the 2018-2022 NBA season data and test my
 models’ performances on them after training them on all the data that I
 used in this project. In addition, I would also consider using
 upsampling or downsampling techniques, such as SMOTE, to balance the
 skewed training set. Moreover, I would also try to separate my analysis
 for the All-NBA selections to Centers, Forwards, and Guards since in
-reality, any All-NBA team is always composed of 2 Guards and 2 Forwards,
+reality, any All-NBA team is always composed of 2 Guards, 2 Forwards,
 and 1 Center. Lastly, since the 3 All-NBA teams each year are ranked
 (i.e. the 1st team is better than the 2nd team, and the 2nd team is
 better than the 3rd team), maybe I can factor this perspective into

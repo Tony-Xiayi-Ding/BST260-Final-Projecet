@@ -1,4 +1,7 @@
 
+# Results
+
+
 ```{r,include=FALSE}
 library(dplyr)
 library(ggplot2)
@@ -189,7 +192,6 @@ players_pergame <-players_pergame|>mutate(All_NBA=case_when(Name_year %in% all_n
 ```
 
 
-# Results
 
 ## Logistic Regression
 
@@ -275,11 +277,11 @@ importance <- varImp(model_lg, scale=FALSE)
 # is more straightforward
 
 # plot importance
-plot(importance)
+plot(importance,main = "Feature Importance from Logistic Regression model")
 
 ```
 
-According to the plot above, we can see that some of the features that are more indicative of All-NBA selections are *Games* (i.e. The number of games played in that season), *ShootingPercentage* (i.e. Effective Field Goal Percentage; a.k.a eFG%), and *BoxPLusMinus* (i.e. Box Plus/Minus, which is a box score estimate of the points per 100 possessions that a player contributed above a league-average player, translated to an average team)$^{1}$. From my perspective, these top-3 most important features make sense to me in that the general public usually regards players with high Box Plus/Minus and players who have high field goal percentages good players; and as a result, good players usually gets to play more games.
+According to the plot above, we can see that some of the features that are more indicative of All-NBA selections are *Games* (i.e. The number of games played in that season), *ShootingPercentage* (i.e. Effective Field Goal Percentage; a.k.a eFG%), and *BoxPlusMinus* (i.e. Box Plus/Minus, which is a box score estimate of the points per 100 possessions that a player contributed above a league-average player, translated to an average team)$^{1}$. From my perspective, these top-3 most important features make sense to me in that the general public usually regards players with high Box Plus/Minus and players who have high field goal percentages good players; and as a result, good players usually gets to play more games.
 
 To sum up, after training a logistic regression model with 5-fold cross validation, we obtained a model with an overall accuracy of 98.34%, and the 3 most important features indicated by this model are *Games*, *ShootingPercentage*, and *BoxPlusMinus*.
 
@@ -311,7 +313,13 @@ Below is a visual demonstration of how the accuracy of this model changes with t
 
 
 ```{r,echo=FALSE}
-plot(rf_cv)
+plot_1 <- rf_cv |> ggplot(aes(rf_cv$results$mtry,rf_cv$results$Accuracy))+
+  geom_line(col="blue")+
+  xlab("mtry")+
+  ggtitle("Parameter tuning for \"mtry\" based on model accuracy")+
+  theme_bw()
+
+plot_1
 
 ```
 
@@ -360,7 +368,8 @@ varImpPlot(RFmodel, main = "Feature Importance from Random Forest model")
 
 ```
 
-According to the plot above, we can see that some of the features that are more indicative of All-NBA selections are EfficiencyRating (i.e. Player Efficiency Rating, which sums up a player's positive accomplishments, subtracts the negative accomplishments, and returns a per-minute rating of a player's performance; a.k.a PER), BoxPLusMinus (i.e. Box Plus/Minus, which is a box score estimate of the points per 100 possessions that a player contributed above a league-average player, translated to an average team), and Points (i.e. The average amount of points the player scores per game in that season)$^{1}$. From my perspective, these top-3 most important features also make sense to me in that the general public usually regards players with high Box Plus/Minus, high player efficiency rating (high PER values), and high scoring capabilities good players.
+According to the plot above, we can see that some of the features that are more indicative of All-NBA selections are *EfficiencyRating* (i.e. Player Efficiency Rating, which sums up a player's positive accomplishments, subtracts the negative accomplishments, and returns a per-minute rating of a player's performance; a.k.a PER), *BoxPLusMinus* (i.e. Box Plus/Minus, which is a box score estimate of the points per 100 possessions that a player contributed above a league-average player, translated to an average team), and *Points* (i.e. The average amount of points the player scores per game in that season)$^{1}$. From my perspective, these top-3 most important features also make sense to me in that the general public usually regards players with high Box Plus/Minus, high player efficiency rating (high PER values), and high scoring capabilities good players.
 
 
 To sum up, after training a random forest model with 5-fold cross validation, we obtained a model with an overall accuracy of 98.28%, and the 3 most important features indicated by this model are *EfficiencyRating*, *BoxPlusMinus*, and *Points*.
+
