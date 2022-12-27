@@ -3,6 +3,5 @@ title: "Tony Ding's BST-260 Final Project"
 output: html_document
 ---
 
-**Predicting All-NBA teams selection based on players' statistics for all players from 2000-2017.**
+Predicting All-NBA teams selection based on players' statistics.
 
-You can also check out my personal website through this [link](https://tony-xiayi-ding.github.io/).
