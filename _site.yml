@@ -1,7 +1,7 @@
 name: "BST 260"
 output_dir: "."
 navbar:
-  title: "BST 260 Final Project"
+  title: "Prediction on All-NBA teams selection"
   left:
     - text: "Home"
       href: index.html
