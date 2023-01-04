@@ -5,3 +5,7 @@ output: html_document
 
 Predicting All-NBA teams selection based on players' statistics.
 
+```{r,echo=FALSE}
+knitr::include_graphics("All-NBA.jpeg")
+```
+
